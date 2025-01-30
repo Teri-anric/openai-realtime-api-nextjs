@@ -34,7 +34,7 @@ interface UseWebRTCAudioSessionReturn {
  */
 export default function useWebRTCAudioSession(
   voice: string,
-  tools?: Tool[],
+  tools?: Tool[]
 ): UseWebRTCAudioSessionReturn {
   const { t, locale } = useTranslations();
   // Connection/session states
@@ -91,6 +91,7 @@ export default function useWebRTCAudioSession(
         input_audio_transcription: {
           model: "whisper-1",
         },
+        instructions: t("languagePrompt"),
       },
     };
     dataChannel.send(JSON.stringify(sessionUpdate));
@@ -99,20 +100,20 @@ export default function useWebRTCAudioSession(
     console.log("Setting locale: " + t("language") + " : " + locale);
 
     // Send language preference message
-    const languageMessage = {
-      type: "conversation.item.create",
-      item: {
-        type: "message",
-        role: "user",
-        content: [
-          {
-            type: "input_text",
-            text: t("languagePrompt"),
-          },
-        ],
-      },
-    };
-    dataChannel.send(JSON.stringify(languageMessage));
+    // const languageMessage = {
+    //   type: "conversation.item.create",
+    //   item: {
+    //     type: "message",
+    //     role: "user",
+    //     content: [
+    //       {
+    //         type: "input_text",
+    //         text: t("languagePrompt"),
+    //       },
+    //     ],
+    //   },
+    // };
+    // dataChannel.send(JSON.stringify(languageMessage));
   }
 
   /**
@@ -153,7 +154,7 @@ export default function useWebRTCAudioSession(
           return { ...msg, ...partial };
         }
         return msg;
-      }),
+      })
     );
   }
 
@@ -438,7 +439,7 @@ export default function useWebRTCAudioSession(
 
       // Send SDP offer to OpenAI Realtime
       const baseUrl = "https://api.openai.com/v1/realtime";
-      const model = "gpt-4o-realtime-preview-2024-12-17";
+      const model = "gpt-4o-mini-realtime-preview-2024-12-17";
       const response = await fetch(`${baseUrl}?model=${model}&voice=${voice}`, {
         method: "POST",
         body: offer.sdp,
@@ -514,13 +515,16 @@ export default function useWebRTCAudioSession(
    * Send a text message through the data channel
    */
   function sendTextMessage(text: string) {
-    if (!dataChannelRef.current || dataChannelRef.current.readyState !== "open") {
+    if (
+      !dataChannelRef.current ||
+      dataChannelRef.current.readyState !== "open"
+    ) {
       console.error("Data channel not ready");
       return;
     }
 
     const messageId = uuidv4();
-    
+
     // Add message to conversation immediately
     const newMessage: Conversation = {
       id: messageId,
@@ -530,8 +534,8 @@ export default function useWebRTCAudioSession(
       isFinal: true,
       status: "final",
     };
-    
-    setConversation(prev => [...prev, newMessage]);
+
+    setConversation((prev) => [...prev, newMessage]);
 
     // Send message through data channel
     const message = {
@@ -551,9 +555,10 @@ export default function useWebRTCAudioSession(
     const response = {
       type: "response.create",
     };
-    
+
     dataChannelRef.current.send(JSON.stringify(message));
-    dataChannelRef.current.send(JSON.stringify(response));}
+    dataChannelRef.current.send(JSON.stringify(response));
+  }
 
   // Cleanup on unmount
   useEffect(() => {

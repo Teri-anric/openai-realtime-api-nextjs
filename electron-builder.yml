@@ -1,0 +1,21 @@
+appId: com.latand.openai-realtime-api
+productName: OpenAI Realtime API
+copyright: Copyright © 2024 latand
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null
+win:
+  target: nsis
+mac:
+  target: dmg
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Development
