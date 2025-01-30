@@ -181,9 +181,8 @@ export const useToolsFunctions = () => {
     };
   };
 
-  const copyToClipboard = async ({ text }: { text: string }) => {
+  const pasteText = async ({ text }: { text: string }) => {
     try {
-      // Use Electron's clipboard API if available, fallback to web API
       if (window.electron?.clipboard) {
         await window.electron.clipboard.writeAndPaste(text);
       } else {
@@ -199,58 +198,73 @@ export const useToolsFunctions = () => {
         message: t("tools.clipboard.success"),
       };
     } catch (error) {
-      console.error("Failed to copy to clipboard:", error);
+      console.error("Failed to paste text:", error);
       return {
         success: false,
-        message: `Failed to copy to clipboard: ${error}`,
+        message: `Failed to paste text: ${error}`,
       };
     }
   };
 
-  const copyToClipboardAndEnter = async ({ text }: { text: string }) => {
+  const openSpotify = async () => {
     try {
-      // Use Electron's clipboard API if available, fallback to web API
-      if (window.electron?.clipboard) {
-        await window.electron.clipboard.writeAndEnter(text);
-      } else {
-        await navigator.clipboard.writeText(text);
-      }
-
-      toast(t("tools.clipboard.toast") + " 📋↵", {
-        description: t("tools.clipboard.description"),
-      });
-      return {
-        success: true,
-        text,
-        message: t("tools.clipboard.success"),
-      };
-    } catch (error) {
-      console.error("Failed to copy to clipboard and press enter:", error);
-      return {
-        success: false,
-        message: `Failed to copy to clipboard and press enter: ${error}`,
-      };
-    }
-  };
-
-  const pressEnter = async () => {
-    try {
-      if (window.electron?.keyboard) {
-        await window.electron.keyboard.pressEnter();
+      if (window.electron?.system) {
+        await window.electron.system.openSpotify();
         return {
           success: true,
-          message: "Pressed Enter key",
+          message: "Opened Spotify",
         };
       }
       return {
         success: false,
-        message: "Keyboard control not available in web mode",
+        message: "System control not available in web mode",
       };
     } catch (error) {
-      console.error("Failed to press enter:", error);
       return {
         success: false,
-        message: `Failed to press enter: ${error}`,
+        message: `Failed to open Spotify: ${error}`,
+      };
+    }
+  };
+
+  const controlMusic = async ({ action }: { action: "play" | "pause" }) => {
+    try {
+      if (window.electron?.system) {
+        await window.electron.system.controlMusic(action);
+        return {
+          success: true,
+          message: `Music ${action}ed successfully`,
+        };
+      }
+      return {
+        success: false,
+        message: "System control not available in web mode",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to ${action} music: ${error}`,
+      };
+    }
+  };
+
+  const adjustVolume = async ({ percentage }: { percentage: number }) => {
+    try {
+      if (window.electron?.system) {
+        await window.electron.system.adjustVolume(percentage);
+        return {
+          success: true,
+          message: `Volume adjusted by ${percentage}%`,
+        };
+      }
+      return {
+        success: false,
+        message: "System control not available in web mode",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to adjust volume: ${error}`,
       };
     }
   };
@@ -295,9 +309,10 @@ export const useToolsFunctions = () => {
     backgroundFunction,
     partyFunction,
     launchWebsite,
-    copyToClipboard,
-    copyToClipboardAndEnter,
-    pressEnter,
+    pasteText,
+    openSpotify,
+    controlMusic,
+    adjustVolume,
     scrapeWebsite,
   };
 };

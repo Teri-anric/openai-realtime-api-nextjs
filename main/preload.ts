@@ -12,4 +12,14 @@ contextBridge.exposeInMainWorld("electron", {
   keyboard: {
     pressEnter: () => ipcRenderer.invoke("keyboard:pressEnter"),
   },
+  system: {
+    test: () => ipcRenderer.invoke("system:test"),
+    openSpotify: () => ipcRenderer.invoke("system:openSpotify"),
+    controlMusic: (action: "play" | "pause") =>
+      ipcRenderer.invoke("system:controlMusic", action),
+    adjustVolume: (percentage: number) =>
+      ipcRenderer.invoke("system:adjustVolume", percentage),
+    adjustSystemVolume: (percentage: number) =>
+      ipcRenderer.invoke("system:adjustSystemVolume", percentage),
+  },
 });

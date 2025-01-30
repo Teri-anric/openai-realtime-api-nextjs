@@ -43,6 +43,9 @@ const App: React.FC = () => {
         copyToClipboard: "copyToClipboard",
         scrapeWebsite: "scrapeWebsite",
         pressEnter: "pressEnter",
+        openSpotify: "openSpotify",
+        controlMusic: "controlMusic",
+        adjustVolume: "adjustVolume",
       };
 
       registerFunction(functionNames[name], func);

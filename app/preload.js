@@ -11,5 +11,12 @@ electron_1.contextBridge.exposeInMainWorld("electron", {
     keyboard: {
         pressEnter: () => electron_1.ipcRenderer.invoke("keyboard:pressEnter"),
     },
+    system: {
+        test: () => electron_1.ipcRenderer.invoke("system:test"),
+        openSpotify: () => electron_1.ipcRenderer.invoke("system:openSpotify"),
+        controlMusic: (action) => electron_1.ipcRenderer.invoke("system:controlMusic", action),
+        adjustVolume: (percentage) => electron_1.ipcRenderer.invoke("system:adjustVolume", percentage),
+        adjustSystemVolume: (percentage) => electron_1.ipcRenderer.invoke("system:adjustSystemVolume", percentage),
+    },
 });
 //# sourceMappingURL=preload.js.map

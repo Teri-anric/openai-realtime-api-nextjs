@@ -3,34 +3,15 @@ interface Tool {
   type: "function";
   name: string;
   description: string;
-  parameters?: {
-    type: string;
-    properties: Record<
-      string,
-      {
-        type: string;
-        description: string;
-      }
-    >;
+  parameters: {
+    type: "object";
+    properties: Record<string, unknown>;
   };
 }
 
 const toolDefinitions = {
   getCurrentTime: {
     description: "Gets the current time in the user's timezone",
-    parameters: {},
-  },
-  changeBackgroundColor: {
-    description: "Changes the background color of the page",
-    parameters: {
-      color: {
-        type: "string",
-        description: "Color value (hex, rgb, or color name)",
-      },
-    },
-  },
-  partyMode: {
-    description: "Triggers a confetti animation on the page",
     parameters: {},
   },
   launchWebsite: {
@@ -42,27 +23,51 @@ const toolDefinitions = {
       },
     },
   },
-  copyToClipboard: {
-    description: "Copies text to the user's clipboard and pastes it",
+  pasteText: {
+    description: "Pastes the provided text at the current cursor position",
     parameters: {
       text: {
         type: "string",
-        description: "The text to copy and paste",
+        description: "The text to paste at the current cursor position",
       },
     },
   },
-  copyToClipboardAndEnter: {
-    description: "Copies text to clipboard, pastes it, and presses Enter",
-    parameters: {
-      text: {
-        type: "string",
-        description: "The text to copy, paste, and submit",
-      },
-    },
-  },
-  pressEnter: {
-    description: "Simulates pressing the Enter key",
+  openSpotify: {
+    description: "Opens the Spotify desktop application",
     parameters: {},
+  },
+  controlMusic: {
+    description: "Controls music playback in Spotify (play/pause)",
+    parameters: {
+      action: {
+        type: "string",
+        enum: ["play", "pause"],
+        description: "The action to perform: 'play' or 'pause'",
+      },
+    },
+  },
+  adjustVolume: {
+    description:
+      "Adjusts Spotify's volume level (does not affect system volume)",
+    parameters: {
+      percentage: {
+        type: "number",
+        description: "The volume level to set for Spotify (0-100)",
+        enum: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        examples: [50, 75, 100],
+      },
+    },
+  },
+  adjustSystemVolume: {
+    description: "Adjusts the system-wide volume level",
+    parameters: {
+      percentage: {
+        type: "number",
+        description: "The volume level to set (0-100)",
+        enum: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        examples: [50, 75, 100],
+      },
+    },
   },
   scrapeWebsite: {
     description:
@@ -82,7 +87,7 @@ const tools: Tool[] = Object.entries(toolDefinitions).map(([name, config]) => ({
   description: config.description,
   parameters: {
     type: "object",
-    properties: config.parameters,
+    properties: config.parameters || {},
   },
 }));
 
